@@ -33,25 +33,25 @@ module.exports = async function handler(req, res) {
     const response = await notion.databases.query({
       database_id: dbId,
       filter: {
-        property: 'Status',
+        property: 'status',
         select: { equals: 'Published' },
       },
-      sorts: [{ property: 'Date', direction: 'descending' }],
+      sorts: [{ property: 'date', direction: 'descending' }],
       page_size: 50,
     });
 
     const posts = response.results.map(page => {
       const p = page.properties;
-      const catName = getText(p.Category);
+      const catName = getText(p.category);
       return {
         id:       page.id,
-        title:    getText(p.Title),
+        title:    getText(p.title),
         category: CAT_SLUG[catName] || 'deep-dive',
         catLabel: catName || 'Deep Dive Blog',
-        excerpt:  getText(p.Excerpt),
-        cover:    getText(p.Cover),
-        date:     getText(p.Date),
-        author:   getText(p.Author) || 'Sam Kim',
+        excerpt:  getText(p.excerpt),
+        cover:    getText(p.cover),
+        date:     getText(p.date),
+        author:   getText(p.author) || 'Sam Kim',
       };
     });
 

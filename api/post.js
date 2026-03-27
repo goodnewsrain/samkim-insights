@@ -119,7 +119,7 @@ module.exports = async function handler(req, res) {
     // Get page properties
     const page = await notion.pages.retrieve({ page_id: id });
     const p = page.properties;
-    const catName = getText(p.Category);
+    const catName = getText(p.category);
 
     // Get page blocks (content)
     const blocksResp = await notion.blocks.children.list({ block_id: id, page_size: 100 });
@@ -128,13 +128,13 @@ module.exports = async function handler(req, res) {
     res.status(200).json({
       post: {
         id:          page.id,
-        title:       getText(p.Title),
+        title:       getText(p.title),
         category:    CAT_SLUG[catName] || 'deep-dive',
         catLabel:    catName || 'Deep Dive Blog',
-        excerpt:     getText(p.Excerpt),
-        cover:       getText(p.Cover),
-        date:        getText(p.Date),
-        author:      getText(p.Author) || 'Sam Kim',
+        excerpt:     getText(p.excerpt),
+        cover:       getText(p.cover),
+        date:        getText(p.date),
+        author:      getText(p.author) || 'Sam Kim',
         contentHtml,
       }
     });
