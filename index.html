@@ -1,0 +1,1593 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sam Kim Insights | DEI & Intercultural Leadership</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* Korean-only font face using unicode-range */
+        @font-face {
+            font-family: 'KoreanBody';
+            src: local('Malgun Gothic'), local('맑은 고딕');
+            unicode-range: U+AC00-D7A3, U+1100-11FF, U+3130-318F, U+A960-A97F, U+D7B0-D7FF;
+            font-weight: 100 900;
+        }
+        @font-face {
+            font-family: 'KoreanHead';
+            src: local('Malgun Gothic Bold'), local('Malgun Gothic'), local('맑은 고딕');
+            unicode-range: U+AC00-D7A3, U+1100-11FF, U+3130-318F, U+A960-A97F, U+D7B0-D7FF;
+            font-weight: 100 900;
+        }
+
+        * { box-sizing: border-box; }
+        body { font-family: 'KoreanBody', 'Inter', sans-serif; background: #f8f7f4; color: #111; }
+        h1, h2, h3 { font-family: 'KoreanHead', 'Playfair Display', serif; }
+
+        /* Ticker */
+        .ticker-wrap { overflow: hidden; white-space: nowrap; }
+        .ticker-inner { display: inline-block; animation: ticker 35s linear infinite; }
+        .ticker-inner:hover { animation-play-state: paused; }
+        @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+        /* Nav */
+        .nav-link { position: relative; }
+        .nav-link::after { content:''; position:absolute; bottom:-4px; left:0; width:0; height:2px; background:#dc2626; transition:width .3s; }
+        .nav-link:hover::after { width:100%; }
+
+        /* Hero image zoom */
+        .img-zoom { overflow: hidden; }
+        .img-zoom img { transition: transform .6s ease; }
+        .img-zoom:hover img { transform: scale(1.04); }
+
+        /* Card hover */
+        .card-hover { transition: transform .3s ease, box-shadow .3s ease; }
+        .card-hover:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,.12); }
+
+        /* Divider */
+        .section-divider { border-top: 3px solid #111; }
+
+        /* Quote block */
+        .pullquote { border-left: 5px solid #dc2626; }
+
+        /* Tag pill */
+        .tag { letter-spacing: .08em; }
+
+        /* Smooth scroll */
+        html { scroll-behavior: smooth; }
+
+        /* Mobile menu */
+        #mobile-menu { display: none; }
+        #mobile-menu.open { display: flex; }
+
+        /* Dark newsletter box */
+        .dark-box { background: #0f0f0f; }
+
+        /* Category bar */
+        .cat-bar { border-bottom: 1px solid #ddd; }
+        .cat-item { cursor: pointer; padding: .5rem 0; border-bottom: 3px solid transparent; transition: border-color .2s, color .2s; }
+        .cat-item.active, .cat-item:hover { border-bottom-color: #dc2626; color: #dc2626; }
+
+        /* Sticky sidebar */
+        .sticky-sidebar { position: sticky; top: 80px; }
+
+        /* ── Nav Dropdown ── */
+        .nav-dropdown { position: relative; }
+        .nav-dropdown-menu {
+            display: none; position: absolute; top: calc(100% + 16px); left: 50%;
+            transform: translateX(-50%); background: #fff; border: 2px solid #111;
+            min-width: 160px; z-index: 300; padding: 4px 0;
+        }
+        .nav-dropdown-menu::before {
+            content: ''; position: absolute; top: -7px; left: 50%; transform: translateX(-50%);
+            border-left: 7px solid transparent; border-right: 7px solid transparent;
+            border-bottom: 7px solid #111;
+        }
+        .nav-dropdown-menu::after {
+            content: ''; position: absolute; top: -5px; left: 50%; transform: translateX(-50%);
+            border-left: 6px solid transparent; border-right: 6px solid transparent;
+            border-bottom: 6px solid #fff;
+        }
+        .nav-dropdown:hover .nav-dropdown-menu { display: block; }
+        .nav-dropdown-item {
+            display: block; padding: .6rem 1.2rem; font-size: .65rem; font-weight: 800;
+            text-transform: uppercase; letter-spacing: .1em; white-space: nowrap;
+            color: #111; transition: color .15s, background .15s;
+        }
+        .nav-dropdown-item:hover { color: #dc2626; background: #f8f7f4; }
+        .nav-dropdown-item + .nav-dropdown-item { border-top: 1px solid #f0f0f0; }
+        .nav-arrow { font-size: .5rem; margin-left: 3px; vertical-align: middle; transition: transform .2s; }
+        .nav-dropdown:hover .nav-arrow { transform: rotate(180deg); }
+
+        /* ── Toast ── */
+        #toast {
+            position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(80px);
+            background: #111; color: #fff; padding: .875rem 1.5rem; font-size: .8rem; font-weight: 600;
+            border-radius: 0; z-index: 9999; transition: transform .35s ease, opacity .35s ease;
+            opacity: 0; pointer-events: none; white-space: nowrap; border-left: 4px solid #dc2626;
+            max-width: 90vw; white-space: normal; text-align: center;
+        }
+        #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+        /* ── Dev code banner ── */
+        #dev-code-banner {
+            display: none; background: #fef9c3; border: 2px dashed #ca8a04;
+            padding: .75rem 1rem; margin: 1rem 0; text-align: center;
+        }
+        #dev-code-banner.show { display: block; }
+
+        /* ── Auth Modals ── */
+        .modal-overlay {
+            display: none; position: fixed; inset: 0;
+            background: rgba(0,0,0,.65); backdrop-filter: blur(4px);
+            z-index: 1000; align-items: center; justify-content: center; padding: 1rem;
+        }
+        .modal-overlay.open { display: flex; }
+        .modal-box {
+            background: #fff; width: 100%; max-width: 480px;
+            max-height: 92vh; overflow-y: auto;
+            animation: modalIn .25s ease;
+        }
+        @keyframes modalIn { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+
+        /* Step indicator */
+        .step-dot { width:8px; height:8px; border-radius:50%; background:#ddd; transition:background .3s; }
+        .step-dot.active { background:#dc2626; }
+
+        /* Input */
+        .auth-input {
+            width:100%; border:1.5px solid #ddd; padding:.75rem 1rem;
+            font-size:.8125rem; outline:none; transition:border-color .2s;
+            font-family: inherit;
+        }
+        .auth-input:focus { border-color:#111; }
+        .auth-input.error { border-color:#dc2626; }
+        .auth-label { font-size:.625rem; font-weight:800; text-transform:uppercase; letter-spacing:.1em; color:#555; display:block; margin-bottom:.35rem; }
+        .auth-btn { width:100%; background:#111; color:#fff; padding:.875rem; font-size:.6875rem; font-weight:800; text-transform:uppercase; letter-spacing:.12em; border:none; cursor:pointer; transition:background .2s; }
+        .auth-btn:hover { background:#dc2626; }
+        .auth-btn.outline { background:#fff; color:#111; border:2px solid #111; }
+        .auth-btn.outline:hover { background:#111; color:#fff; }
+        .err-msg { font-size:.7rem; color:#dc2626; margin-top:.25rem; display:none; }
+        .err-msg.show { display:block; }
+
+        /* Verification code boxes */
+        .code-box {
+            width:44px; height:52px; border:2px solid #ddd; text-align:center;
+            font-size:1.25rem; font-weight:800; outline:none; transition:border-color .2s;
+        }
+        .code-box:focus { border-color:#111; }
+
+        /* Success check */
+        .success-icon { width:64px; height:64px; background:#16a34a; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 1.25rem; }
+
+        /* User avatar in navbar */
+        .user-avatar { width:32px; height:32px; border-radius:50%; background:#dc2626; color:#fff; display:flex; align-items:center; justify-content:center; font-size:.65rem; font-weight:800; cursor:pointer; }
+        .dropdown-menu { display:none; position:absolute; right:0; top:calc(100% + 8px); background:#fff; border:1.5px solid #111; min-width:180px; z-index:200; }
+        .dropdown-menu.open { display:block; }
+        .dropdown-item { display:block; padding:.625rem 1rem; font-size:.7rem; font-weight:700; text-transform:uppercase; letter-spacing:.08em; cursor:pointer; border-bottom:1px solid #f0f0f0; }
+        .dropdown-item:hover { background:#f8f7f4; color:#dc2626; }
+        .dropdown-item:last-child { border-bottom:none; }
+    </style>
+</head>
+<body>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<!-- ═══════════════════════ TOP BAR ═══════════════════════ -->
+<div class="bg-black text-white text-[10px] uppercase tracking-widest py-1.5 px-6 flex justify-between items-center">
+    <span class="hidden md:block">Associate Executive · San Francisco Presbytery</span>
+    <span>Monday, March 23, 2026</span>
+    <div class="hidden md:flex items-center gap-4">
+        <a href="#" class="hover:text-red-400 transition-colors">LinkedIn</a>
+        <span class="opacity-30">|</span>
+        <a href="#" class="hover:text-red-400 transition-colors">Instagram</a>
+        <span class="opacity-30">|</span>
+        <a href="mailto:sam@samkiminsights.com" class="hover:text-red-400 transition-colors">Contact</a>
+    </div>
+</div>
+
+<!-- ═══════════════════════ NAVBAR ═══════════════════════ -->
+<nav class="bg-white border-b-2 border-black sticky top-0 z-50 shadow-sm">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+        <a href="#" class="flex flex-col leading-none">
+            <span style="font-family:'Playfair Display',serif;" class="text-3xl font-black tracking-tight uppercase">Sam Kim</span>
+            <span class="text-[10px] uppercase tracking-[.3em] text-red-600 font-bold mt-0.5">Insights</span>
+        </a>
+        <!-- Desktop Nav -->
+        <div class="hidden md:flex items-center gap-8 text-[11px] font-bold uppercase tracking-widest">
+            <a href="#home" class="nav-link hover:text-red-600 transition-colors">Home</a>
+            <a href="#insights" class="nav-link hover:text-red-600 transition-colors">Insights</a>
+            <a href="#blog" class="nav-link hover:text-red-600 transition-colors">Blog</a>
+            <a href="#workshop" class="nav-link hover:text-red-600 transition-colors">IDI Workshop</a>
+            <div class="nav-dropdown">
+                <a href="#about" class="nav-link hover:text-red-600 transition-colors cursor-pointer select-none">
+                    About <span class="nav-arrow">▼</span>
+                </a>
+                <div class="nav-dropdown-menu">
+                    <a href="#about" class="nav-dropdown-item">About</a>
+                    <a href="#menu1" class="nav-dropdown-item">Menu 1</a>
+                    <a href="#menu2" class="nav-dropdown-item">Menu 2</a>
+                </div>
+            </div>
+            <a href="#contact" class="bg-red-600 text-white px-5 py-2.5 hover:bg-red-700 transition-colors">Contact</a>
+            <!-- Auth buttons -->
+            <div id="auth-guest" class="flex items-center gap-2">
+                <button onclick="openModal('login')" class="text-[11px] font-bold uppercase tracking-widest px-4 py-2 border-2 border-black hover:bg-black hover:text-white transition-colors">Login</button>
+                <button onclick="openModal('register')" class="text-[11px] font-bold uppercase tracking-widest px-4 py-2 bg-black text-white hover:bg-red-600 transition-colors">Sign Up</button>
+            </div>
+            <!-- Logged-in user -->
+            <div id="auth-user" class="relative hidden">
+                <div class="user-avatar" id="nav-avatar" onclick="toggleDropdown()"></div>
+                <div class="dropdown-menu" id="user-dropdown">
+                    <div class="px-4 py-3 border-b border-gray-100">
+                        <div class="text-[10px] font-black uppercase tracking-widest text-gray-400">Signed In</div>
+                        <div id="nav-username" class="text-sm font-bold mt-0.5 truncate"></div>
+                    </div>
+                    <span class="dropdown-item" onclick="openModal('profile')">My Profile</span>
+                    <span class="dropdown-item" onclick="logout()">Sign Out</span>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile hamburger -->
+        <button id="hamburger" class="md:hidden flex flex-col gap-1.5 p-2" onclick="toggleMenu()">
+            <span class="w-6 h-0.5 bg-black block transition-all"></span>
+            <span class="w-6 h-0.5 bg-black block transition-all"></span>
+            <span class="w-6 h-0.5 bg-black block transition-all"></span>
+        </button>
+    </div>
+    <!-- Mobile menu -->
+    <div id="mobile-menu" class="flex-col bg-white border-t border-gray-200 px-6 py-4 space-y-4 text-sm font-bold uppercase tracking-widest">
+        <a href="#home" onclick="toggleMenu()" class="block hover:text-red-600">Home</a>
+        <a href="#insights" onclick="toggleMenu()" class="block hover:text-red-600">Insights</a>
+        <a href="#blog" onclick="toggleMenu()" class="block hover:text-red-600">Blog</a>
+        <a href="#workshop" onclick="toggleMenu()" class="block hover:text-red-600">IDI Workshop</a>
+        <a href="#about" onclick="toggleMenu()" class="block hover:text-red-600">About</a>
+        <a href="#menu1" onclick="toggleMenu()" class="block hover:text-red-600 pl-4 text-gray-500">└ Menu 1</a>
+        <a href="#menu2" onclick="toggleMenu()" class="block hover:text-red-600 pl-4 text-gray-500">└ Menu 2</a>
+        <a href="#contact" onclick="toggleMenu()" class="block text-red-600">Contact</a>
+    </div>
+</nav>
+
+<!-- ═══════════════════════ TICKER ═══════════════════════ -->
+<div class="bg-white border-b border-gray-300 py-2 flex items-center">
+    <span class="bg-red-600 text-white px-4 py-1 text-[10px] font-black uppercase tracking-widest shrink-0 ml-4 mr-4">Breaking</span>
+    <div class="ticker-wrap flex-1">
+        <div class="ticker-inner text-xs font-semibold text-gray-700 tracking-tight">
+            SF Presbytery Racial Demographics Report Coming Soon &nbsp;&nbsp;•&nbsp;&nbsp; IDI Leadership Workshop — April Sessions Now Open &nbsp;&nbsp;•&nbsp;&nbsp; New Article: Church Innovation Through a DEI Lens &nbsp;&nbsp;•&nbsp;&nbsp; 2027 Italy–Switzerland Global Mission Trip Announced &nbsp;&nbsp;•&nbsp;&nbsp; New PCUSA Multiracial Church Case Study Published &nbsp;&nbsp;•&nbsp;&nbsp; Jump Leadership LLC Launches New Consulting Program &nbsp;&nbsp;•&nbsp;&nbsp; SF Presbytery Racial Demographics Report Coming Soon &nbsp;&nbsp;•&nbsp;&nbsp; IDI Leadership Workshop — April Sessions Now Open &nbsp;&nbsp;•&nbsp;&nbsp; New Article: Church Innovation Through a DEI Lens &nbsp;&nbsp;•&nbsp;&nbsp; 2027 Italy–Switzerland Global Mission Trip Announced &nbsp;&nbsp;•&nbsp;&nbsp; New PCUSA Multiracial Church Case Study Published &nbsp;&nbsp;•&nbsp;&nbsp; Jump Leadership LLC Launches New Consulting Program
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════ CATEGORY BAR ═══════════════════════ -->
+<div class="bg-white cat-bar">
+    <div class="max-w-7xl mx-auto px-6 flex gap-8 overflow-x-auto text-[11px] font-black uppercase tracking-widest">
+        <span class="cat-item active whitespace-nowrap">All News</span>
+        <span class="cat-item whitespace-nowrap">Theology & DEI</span>
+        <span class="cat-item whitespace-nowrap">Leadership</span>
+        <span class="cat-item whitespace-nowrap">Global Church</span>
+        <span class="cat-item whitespace-nowrap">IDI Analysis</span>
+        <span class="cat-item whitespace-nowrap">Case Studies</span>
+        <span class="cat-item whitespace-nowrap">Global Mission</span>
+    </div>
+</div>
+
+<!-- ═══════════════════════ HERO ═══════════════════════ -->
+<main id="home" class="max-w-7xl mx-auto px-6 pt-10 pb-4">
+
+    <section class="grid grid-cols-1 lg:grid-cols-12 gap-10 mb-16">
+
+        <!-- MAIN FEATURE -->
+        <div class="lg:col-span-8">
+            <div class="img-zoom aspect-[16/9] bg-gray-200 mb-6 cursor-pointer">
+                <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&q=80&w=2070"
+                     alt="DEI Leadership" class="w-full h-full object-cover">
+            </div>
+            <div class="space-y-4">
+                <div class="flex items-center gap-3">
+                    <span class="tag bg-red-600 text-white text-[10px] font-black px-3 py-1 uppercase">Special Report</span>
+                    <span class="text-[10px] text-gray-400 uppercase font-bold tracking-widest">March 21, 2026</span>
+                </div>
+                <h1 class="text-4xl md:text-5xl leading-tight font-black cursor-pointer hover:text-red-700 transition-colors">
+                    Beyond Inclusion: The Racial Turning Point of the American Church
+                </h1>
+                <p class="text-gray-600 text-lg leading-relaxed max-w-2xl">
+                    Witnessing transformation firsthand as Associate Executive of the San Francisco Presbytery. Moving beyond simply gathering diverse people — how do we achieve structural and theological reformation? The truth told through data and lived experience.
+                </p>
+                <div class="flex items-center gap-4 pt-2">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200"
+                         class="w-10 h-10 rounded-full object-cover" alt="Sam Kim">
+                    <div>
+                        <div class="text-sm font-bold">Sam Kim</div>
+                        <div class="text-xs text-gray-500">Associate Executive, SF Presbytery · IDI Facilitator</div>
+                    </div>
+                    <span class="ml-auto text-xs text-gray-400">8 min read</span>
+                </div>
+                <div class="flex gap-3 pt-2">
+                    <a href="#" class="text-[10px] font-black uppercase tracking-widest text-red-600 hover:underline">Read Full Report →</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- SIDEBAR -->
+        <aside class="lg:col-span-4 space-y-0 sticky-sidebar">
+            <h3 class="text-xs font-black uppercase tracking-widest pb-3 border-b-2 border-black mb-6">Must Read</h3>
+
+            <!-- Sidebar Item 1 -->
+            <div class="flex gap-4 items-start cursor-pointer group py-5 border-b border-gray-200">
+                <div class="img-zoom w-24 h-20 bg-gray-200 shrink-0">
+                    <img src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&q=80&w=400"
+                         class="w-full h-full object-cover" alt="">
+                </div>
+                <div>
+                    <span class="text-[9px] font-black uppercase tracking-widest text-red-600">Tool & Resource</span>
+                    <h4 class="font-bold text-sm leading-snug mt-1 group-hover:text-red-600 transition-colors">Why the IDI Is an Essential Leadership Competency</h4>
+                    <p class="text-xs text-gray-400 mt-1">Feb 14, 2026 · 5 min</p>
+                </div>
+            </div>
+
+            <!-- Sidebar Item 2 -->
+            <div class="flex gap-4 items-start cursor-pointer group py-5 border-b border-gray-200">
+                <div class="img-zoom w-24 h-20 bg-gray-200 shrink-0">
+                    <img src="https://images.unsplash.com/photo-1491336477066-31156b5e4f35?auto=format&fit=crop&q=80&w=400"
+                         class="w-full h-full object-cover" alt="">
+                </div>
+                <div>
+                    <span class="text-[9px] font-black uppercase tracking-widest text-red-600">Global Mission</span>
+                    <h4 class="font-bold text-sm leading-snug mt-1 group-hover:text-red-600 transition-colors">2027 Italy–Switzerland Global Mission Trip: Full Details Revealed</h4>
+                    <p class="text-xs text-gray-400 mt-1">Jan 30, 2026 · 4 min</p>
+                </div>
+            </div>
+
+            <!-- Sidebar Item 3 -->
+            <div class="flex gap-4 items-start cursor-pointer group py-5 border-b border-gray-200">
+                <div class="img-zoom w-24 h-20 bg-gray-200 shrink-0">
+                    <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=400"
+                         class="w-full h-full object-cover" alt="">
+                </div>
+                <div>
+                    <span class="text-[9px] font-black uppercase tracking-widest text-red-600">Interview</span>
+                    <h4 class="font-bold text-sm leading-snug mt-1 group-hover:text-red-600 transition-colors">Redefining Leadership for the Multiracial Church</h4>
+                    <p class="text-xs text-gray-400 mt-1">Jan 10, 2026 · 6 min</p>
+                </div>
+            </div>
+
+            <!-- Newsletter CTA -->
+            <div class="dark-box text-white p-7 mt-6">
+                <p class="text-[9px] uppercase tracking-[.2em] text-red-400 font-black mb-2">Monthly Newsletter</p>
+                <h4 style="font-family:'Playfair Display',serif;" class="text-xl font-bold mb-3 leading-tight">Monthly DEI<br>Insights</h4>
+                <p class="text-xs text-gray-400 mb-5 leading-relaxed">Expert analysis and field reports for the future of the church — delivered to subscribers first.</p>
+                <input type="email" placeholder="your@email.com"
+                       class="w-full p-3 bg-white/10 text-white placeholder-gray-500 text-xs mb-3 border border-white/20 focus:outline-none focus:border-red-400">
+                <button class="w-full bg-red-600 text-white py-3 font-black text-[10px] uppercase tracking-widest hover:bg-red-700 transition-colors">
+                    Subscribe Free →
+                </button>
+            </div>
+        </aside>
+    </section>
+
+    <!-- ═══════════════════════ SPOTLIGHT ROW ═══════════════════════ -->
+    <div class="section-divider pt-8 mb-8 flex items-center justify-between">
+        <h2 class="text-base font-black uppercase tracking-widest">Spotlight</h2>
+        <a href="#" class="text-[10px] font-black uppercase tracking-widest text-red-600 hover:underline">View All →</a>
+    </div>
+
+    <section class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+        <!-- Spotlight A -->
+        <article class="card-hover cursor-pointer group bg-white border border-gray-200">
+            <div class="img-zoom aspect-[4/3]">
+                <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&q=80&w=800"
+                     class="w-full h-full object-cover" alt="">
+            </div>
+            <div class="p-5">
+                <span class="tag text-[9px] font-black uppercase text-red-600 tracking-widest">Theology & DEI</span>
+                <h4 class="text-lg font-bold leading-snug mt-2 mb-2 group-hover:text-red-700 transition-colors" style="font-family:'Playfair Display',serif;">
+                    What Does Scripture Say About Diversity?
+                </h4>
+                <p class="text-xs text-gray-500 leading-relaxed">From Genesis to Revelation, the entire arc of Scripture points in one direction: unity within diversity.</p>
+                <div class="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between">
+                    <span class="text-[10px] text-gray-400">Mar 10, 2026</span>
+                    <span class="text-[10px] text-gray-400">7 min read</span>
+                </div>
+            </div>
+        </article>
+
+        <!-- Spotlight B — Featured (taller) -->
+        <article class="card-hover cursor-pointer group bg-black text-white row-span-1 relative overflow-hidden">
+            <div class="img-zoom h-48">
+                <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&q=80&w=800"
+                     class="w-full h-full object-cover opacity-50" alt="">
+            </div>
+            <div class="p-5">
+                <span class="tag text-[9px] font-black uppercase text-red-400 tracking-widest">Strategy</span>
+                <h4 class="text-lg font-bold leading-snug mt-2 mb-2 group-hover:text-red-300 transition-colors" style="font-family:'Playfair Display',serif;">
+                    The Changing Neighborhood, the Unchanging Church: A Path to Survival
+                </h4>
+                <p class="text-xs text-gray-400 leading-relaxed">When the demographic makeup of a community shifts, how should the church respond? A strategy for moving beyond survival to flourishing.</p>
+                <div class="mt-4 pt-4 border-t border-white/10 flex items-center justify-between">
+                    <span class="text-[10px] text-gray-500">Feb 28, 2026</span>
+                    <span class="text-[10px] text-gray-500">10 min read</span>
+                </div>
+            </div>
+        </article>
+
+        <!-- Spotlight C -->
+        <article class="card-hover cursor-pointer group bg-white border border-gray-200">
+            <div class="img-zoom aspect-[4/3]">
+                <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=800"
+                     class="w-full h-full object-cover" alt="">
+            </div>
+            <div class="p-5">
+                <span class="tag text-[9px] font-black uppercase text-red-600 tracking-widest">Coaching</span>
+                <h4 class="text-lg font-bold leading-snug mt-2 mb-2 group-hover:text-red-700 transition-colors" style="font-family:'Playfair Display',serif;">
+                    Turning a Leader's Bias into a Driver for Growth
+                </h4>
+                <p class="text-xs text-gray-500 leading-relaxed">Bias is not something to be eliminated — recognizing and transforming it is where genuine intercultural competence begins.</p>
+                <div class="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between">
+                    <span class="text-[10px] text-gray-400">Feb 5, 2026</span>
+                    <span class="text-[10px] text-gray-400">6 min read</span>
+                </div>
+            </div>
+        </article>
+    </section>
+
+    <!-- ═══════════════════════ CASE STUDIES ═══════════════════════ -->
+    <div id="insights" class="section-divider pt-8 mb-8 flex items-center justify-between">
+        <h2 class="text-base font-black uppercase tracking-widest">Case Studies & Insights</h2>
+        <a href="#" class="text-[10px] font-black uppercase tracking-widest text-red-600 hover:underline">View All →</a>
+    </div>
+
+    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+        <article class="cursor-pointer group">
+            <div class="img-zoom aspect-square bg-gray-200 mb-4">
+                <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&q=80&w=600"
+                     class="w-full h-full object-cover" alt="">
+            </div>
+            <span class="tag text-[9px] font-black text-red-600 uppercase tracking-widest">Strategy</span>
+            <h4 class="text-sm font-bold leading-snug mt-1 group-hover:text-red-600 transition-colors" style="font-family:'Playfair Display',serif;">
+                The Changing Neighborhood, the Unchanging Church: A Path to Survival
+            </h4>
+            <p class="text-xs text-gray-400 mt-1">Jan 2026 · 10 min</p>
+        </article>
+
+        <article class="cursor-pointer group">
+            <div class="img-zoom aspect-square bg-gray-200 mb-4">
+                <img src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&q=80&w=600"
+                     class="w-full h-full object-cover" alt="">
+            </div>
+            <span class="tag text-[9px] font-black text-red-600 uppercase tracking-widest">Coaching</span>
+            <h4 class="text-sm font-bold leading-snug mt-1 group-hover:text-red-600 transition-colors" style="font-family:'Playfair Display',serif;">
+                Turning a Leader's Bias into a Driver for Growth
+            </h4>
+            <p class="text-xs text-gray-400 mt-1">Jan 2026 · 6 min</p>
+        </article>
+
+        <article class="cursor-pointer group">
+            <div class="img-zoom aspect-square bg-gray-200 mb-4">
+                <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80&w=600"
+                     class="w-full h-full object-cover" alt="">
+            </div>
+            <span class="tag text-[9px] font-black text-red-600 uppercase tracking-widest">IDI Analysis</span>
+            <h4 class="text-sm font-bold leading-snug mt-1 group-hover:text-red-600 transition-colors" style="font-family:'Playfair Display',serif;">
+                The Intercultural Competence Gap: Real-World Case Studies
+            </h4>
+            <p class="text-xs text-gray-400 mt-1">Dec 2025 · 8 min</p>
+        </article>
+
+        <article class="cursor-pointer group">
+            <div class="img-zoom aspect-square bg-gray-200 mb-4">
+                <img src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&q=80&w=600"
+                     class="w-full h-full object-cover" alt="">
+            </div>
+            <span class="tag text-[9px] font-black text-red-600 uppercase tracking-widest">Interview</span>
+            <h4 class="text-sm font-bold leading-snug mt-1 group-hover:text-red-600 transition-colors" style="font-family:'Playfair Display',serif;">
+                Defining Leadership for the Multiracial Church
+            </h4>
+            <p class="text-xs text-gray-400 mt-1">Dec 2025 · 5 min</p>
+        </article>
+    </section>
+
+    <!-- ═══════════════════════ PULL QUOTE ═══════════════════════ -->
+    <div class="pullquote pl-8 py-2 mb-16 max-w-3xl mx-auto">
+        <blockquote style="font-family:'Playfair Display',serif;" class="text-2xl md:text-3xl font-bold italic text-gray-800 leading-snug mb-4">
+            "True inclusion is not simply gathering diverse people into the same space. It demands a fundamental transformation of systems, theology, and leadership."
+        </blockquote>
+        <cite class="text-sm font-bold not-italic text-gray-500">— Sam Kim, Associate Executive · San Francisco Presbytery</cite>
+    </div>
+
+    <!-- ═══════════════════════ IDI WORKSHOP ═══════════════════════ -->
+    <section id="workshop" class="bg-white border border-gray-200 p-10 md:p-16 mb-16 grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+        <div>
+            <span class="tag text-[9px] font-black uppercase tracking-widest text-red-600">IDI Workshop</span>
+            <h2 class="text-3xl md:text-4xl font-black mt-3 mb-5 leading-tight">
+                Intercultural Development Inventory<br>
+                <span class="text-red-600">Leadership Workshop</span>
+            </h2>
+            <p class="text-gray-600 text-sm leading-relaxed mb-6">
+                The IDI (Intercultural Development Inventory) is a validated tool used by over 2 million people worldwide. As a certified IDI Qualified Administrator, Sam Kim delivers customized workshops for church leaders, nonprofits, and organizations.
+            </p>
+            <ul class="space-y-3 mb-8 text-sm">
+                <li class="flex items-start gap-3">
+                    <span class="text-red-600 font-black mt-0.5">✓</span>
+                    <span>Individual IDI assessment with 1-on-1 debrief session</span>
+                </li>
+                <li class="flex items-start gap-3">
+                    <span class="text-red-600 font-black mt-0.5">✓</span>
+                    <span>Team & organizational group workshops (half-day · full-day)</span>
+                </li>
+                <li class="flex items-start gap-3">
+                    <span class="text-red-600 font-black mt-0.5">✓</span>
+                    <span>Ongoing intercultural development planning</span>
+                </li>
+            </ul>
+            <div class="flex gap-4">
+                <a href="#contact" class="bg-red-600 text-white px-7 py-3 font-black text-[10px] uppercase tracking-widest hover:bg-red-700 transition-colors">Book a Session</a>
+                <a href="#" class="border-2 border-black text-black px-7 py-3 font-black text-[10px] uppercase tracking-widest hover:bg-black hover:text-white transition-colors">Learn More</a>
+            </div>
+        </div>
+        <div class="relative">
+            <div class="img-zoom aspect-[4/3]">
+                <img src="https://images.unsplash.com/photo-1543269865-cbf427effbad?auto=format&fit=crop&q=80&w=1000"
+                     class="w-full h-full object-cover" alt="IDI Workshop">
+            </div>
+            <div class="absolute -bottom-4 -left-4 bg-red-600 text-white p-5">
+                <div class="text-3xl font-black">2M+</div>
+                <div class="text-xs uppercase tracking-widest mt-1">Global IDI Users</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════ BLOG ═══════════════════════ -->
+    <div id="blog" class="section-divider pt-8 mb-8 flex items-center justify-between">
+        <h2 class="text-base font-black uppercase tracking-widest">Deep Dive Blog</h2>
+        <a href="#" class="text-[10px] font-black uppercase tracking-widest text-red-600 hover:underline">All Posts →</a>
+    </div>
+
+    <section class="grid grid-cols-1 lg:grid-cols-12 gap-10 mb-16">
+        <!-- Main Blog Post -->
+        <div class="lg:col-span-7">
+            <article class="cursor-pointer group">
+                <div class="img-zoom aspect-[16/9] mb-6">
+                    <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&q=80&w=1200"
+                         class="w-full h-full object-cover" alt="">
+                </div>
+                <div class="flex items-center gap-3 mb-3">
+                    <span class="bg-black text-white text-[9px] font-black px-3 py-1 uppercase tracking-widest">Featured</span>
+                    <span class="text-[9px] text-gray-400 uppercase font-bold tracking-widest">Theology & DEI</span>
+                    <span class="text-[9px] text-gray-400">·</span>
+                    <span class="text-[9px] text-gray-400">March 15, 2026</span>
+                </div>
+                <h3 class="text-2xl md:text-3xl font-bold leading-tight mb-3 group-hover:text-red-700 transition-colors" style="font-family:'Playfair Display',serif;">
+                    DEI and the Future of the American Church: What the Data Tells Us
+                </h3>
+                <p class="text-gray-600 text-sm leading-relaxed mb-4">
+                    As America's racial demographics shift dramatically, where does the church stand? Drawing on the latest PCUSA demographic data and field interviews, this piece analyzes the crisis and opportunity facing the American church — at the intersection of theological mandate and sociological reality.
+                </p>
+                <a href="#" class="text-[10px] font-black uppercase tracking-widest text-red-600 hover:underline">Read Full Article →</a>
+            </article>
+        </div>
+
+        <!-- Blog List -->
+        <div class="lg:col-span-5 space-y-0">
+            <h4 class="text-xs font-black uppercase tracking-widest border-b-2 border-black pb-3 mb-0">Recent Posts</h4>
+
+            <article class="cursor-pointer group flex gap-4 py-5 border-b border-gray-200">
+                <div class="img-zoom w-20 h-16 shrink-0">
+                    <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&q=80&w=300"
+                         class="w-full h-full object-cover" alt="">
+                </div>
+                <div>
+                    <span class="text-[9px] font-black text-red-600 uppercase tracking-widest">Leadership</span>
+                    <h5 class="text-sm font-bold leading-snug mt-0.5 group-hover:text-red-600 transition-colors">No Inclusion Without Structural Change</h5>
+                    <p class="text-[10px] text-gray-400 mt-1">Mar 8, 2026 · 9 min</p>
+                </div>
+            </article>
+
+            <article class="cursor-pointer group flex gap-4 py-5 border-b border-gray-200">
+                <div class="img-zoom w-20 h-16 shrink-0">
+                    <img src="https://images.unsplash.com/photo-1491336477066-31156b5e4f35?auto=format&fit=crop&q=80&w=300"
+                         class="w-full h-full object-cover" alt="">
+                </div>
+                <div>
+                    <span class="text-[9px] font-black text-red-600 uppercase tracking-widest">Global Church</span>
+                    <h5 class="text-sm font-bold leading-snug mt-0.5 group-hover:text-red-600 transition-colors">Lessons in Multiracial Ministry from the Global Church</h5>
+                    <p class="text-[10px] text-gray-400 mt-1">Feb 22, 2026 · 7 min</p>
+                </div>
+            </article>
+
+            <article class="cursor-pointer group flex gap-4 py-5 border-b border-gray-200">
+                <div class="img-zoom w-20 h-16 shrink-0">
+                    <img src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&q=80&w=300"
+                         class="w-full h-full object-cover" alt="">
+                </div>
+                <div>
+                    <span class="text-[9px] font-black text-red-600 uppercase tracking-widest">IDI Analysis</span>
+                    <h5 class="text-sm font-bold leading-snug mt-0.5 group-hover:text-red-600 transition-colors">5 Steps to Translate IDI Results into Organizational Change</h5>
+                    <p class="text-[10px] text-gray-400 mt-1">Feb 10, 2026 · 11 min</p>
+                </div>
+            </article>
+
+            <article class="cursor-pointer group flex gap-4 py-5 border-b border-gray-200">
+                <div class="img-zoom w-20 h-16 shrink-0">
+                    <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=300"
+                         class="w-full h-full object-cover" alt="">
+                </div>
+                <div>
+                    <span class="text-[9px] font-black text-red-600 uppercase tracking-widest">Case Study</span>
+                    <h5 class="text-sm font-bold leading-snug mt-0.5 group-hover:text-red-600 transition-colors">One Church's 3-Year DEI Journey: A Record of Failure and Success</h5>
+                    <p class="text-[10px] text-gray-400 mt-1">Jan 25, 2026 · 13 min</p>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════ ABOUT ═══════════════════════ -->
+    <section id="about" class="bg-black text-white p-10 md:p-16 mb-16 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+        <div class="img-zoom aspect-square max-w-sm mx-auto md:mx-0">
+            <img src="samkim-photo.jpg"
+                 class="w-full h-full object-cover" alt="Sam Kim">
+        </div>
+        <div>
+            <span class="tag text-[9px] font-black uppercase tracking-widest text-red-400">About Sam Kim</span>
+            <h2 class="text-3xl md:text-4xl font-black mt-3 mb-6 leading-tight">
+                A Leader Who Drives<br>Transformation Beyond Diversity
+            </h2>
+            <p class="text-gray-300 text-sm leading-relaxed mb-4">
+                As Associate Executive of the San Francisco Presbytery (PCUSA) and a certified IDI Qualified Administrator, Sam Kim draws on over 20 years of experience to help churches and nonprofits develop intercultural competence.
+            </p>
+            <p class="text-gray-300 text-sm leading-relaxed mb-6">
+                As the founder of Jump Leadership LLC, he brings distinct expertise in DEI strategy, leadership coaching, and organizational change management. He is currently a doctoral candidate researching the intersection of intercultural competence and theology.
+            </p>
+            <div class="grid grid-cols-3 gap-6 border-t border-white/10 pt-6">
+                <div>
+                    <div class="text-2xl font-black text-red-400">20+</div>
+                    <div class="text-[10px] text-gray-400 uppercase tracking-widest mt-1">Years Experience</div>
+                </div>
+                <div>
+                    <div class="text-2xl font-black text-red-400">500+</div>
+                    <div class="text-[10px] text-gray-400 uppercase tracking-widest mt-1">Leaders Coached</div>
+                </div>
+                <div>
+                    <div class="text-2xl font-black text-red-400">50+</div>
+                    <div class="text-[10px] text-gray-400 uppercase tracking-widest mt-1">Organizations</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════ CONTACT ═══════════════════════ -->
+    <section id="contact" class="mb-16 grid grid-cols-1 md:grid-cols-2 gap-0 border border-gray-200">
+        <div class="bg-red-600 text-white p-10 md:p-16 flex flex-col justify-center">
+            <span class="tag text-[9px] font-black uppercase tracking-widest text-red-200 mb-3">Get In Touch</span>
+            <h2 class="text-3xl md:text-4xl font-black mb-6 leading-tight">Let's Build<br>Change Together</h2>
+            <p class="text-red-100 text-sm leading-relaxed mb-8">
+                IDI workshops, DEI consulting, speaking engagements, and writing requests are always welcome. The first consultation is free.
+            </p>
+            <div class="space-y-4 text-sm">
+                <div class="flex items-center gap-3">
+                    <span class="text-red-200 font-bold text-xs uppercase tracking-widest w-16">Email</span>
+                    <a href="mailto:skim@sfpby.org" class="hover:underline">skim@sfpby.org</a>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="text-red-200 font-bold text-xs uppercase tracking-widest w-16">LinkedIn</span>
+                    <a href="#" class="hover:underline">linkedin.com/in/samkim</a>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="text-red-200 font-bold text-xs uppercase tracking-widest w-16">Location</span>
+                    <span>San Francisco Bay Area, CA</span>
+                </div>
+            </div>
+        </div>
+        <div class="bg-white p-10 md:p-16">
+            <form class="space-y-5">
+                <div class="grid grid-cols-2 gap-5">
+                    <div>
+                        <label class="text-[10px] font-black uppercase tracking-widest block mb-2">First Name</label>
+                        <input type="text" class="w-full border border-gray-300 p-3 text-sm focus:outline-none focus:border-black">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-black uppercase tracking-widest block mb-2">Last Name</label>
+                        <input type="text" class="w-full border border-gray-300 p-3 text-sm focus:outline-none focus:border-black">
+                    </div>
+                </div>
+                <div>
+                    <label class="text-[10px] font-black uppercase tracking-widest block mb-2">Email</label>
+                    <input type="email" class="w-full border border-gray-300 p-3 text-sm focus:outline-none focus:border-black">
+                </div>
+                <div>
+                    <label class="text-[10px] font-black uppercase tracking-widest block mb-2">Subject</label>
+                    <select class="w-full border border-gray-300 p-3 text-sm focus:outline-none focus:border-black bg-white">
+                        <option>IDI Workshop Inquiry</option>
+                        <option>DEI Consulting</option>
+                        <option>Speaking Request</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="text-[10px] font-black uppercase tracking-widest block mb-2">Message</label>
+                    <textarea rows="4" class="w-full border border-gray-300 p-3 text-sm focus:outline-none focus:border-black resize-none"></textarea>
+                </div>
+                <button type="submit" class="w-full bg-black text-white py-4 font-black text-[10px] uppercase tracking-widest hover:bg-red-600 transition-colors">
+                    Send Message →
+                </button>
+            </form>
+        </div>
+    </section>
+
+</main>
+
+<!-- ═══════════════════════ FOOTER ═══════════════════════ -->
+<footer class="bg-black text-white">
+    <div class="max-w-7xl mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-4 gap-10">
+        <div class="md:col-span-2">
+            <div style="font-family:'Playfair Display',serif;" class="text-3xl font-black uppercase tracking-tight mb-1">Sam Kim</div>
+            <div class="text-[9px] uppercase tracking-[.3em] text-red-500 font-black mb-5">Insights</div>
+            <p class="text-gray-400 text-xs leading-relaxed max-w-xs">
+                Associate Executive at San Francisco Presbytery · Professional IDI Facilitator · DEI Strategist · Founder, Jump Leadership LLC
+            </p>
+        </div>
+        <div>
+            <h5 class="text-[10px] font-black uppercase tracking-widest text-gray-500 mb-4">Navigate</h5>
+            <ul class="space-y-2 text-xs text-gray-300">
+                <li><a href="#home" class="hover:text-red-400 transition-colors">Home</a></li>
+                <li><a href="#insights" class="hover:text-red-400 transition-colors">Insights</a></li>
+                <li><a href="#blog" class="hover:text-red-400 transition-colors">Blog</a></li>
+                <li><a href="#workshop" class="hover:text-red-400 transition-colors">IDI Workshop</a></li>
+                <li><a href="#about" class="hover:text-red-400 transition-colors">About</a></li>
+                <li><a href="#contact" class="hover:text-red-400 transition-colors">Contact</a></li>
+            </ul>
+        </div>
+        <div>
+            <h5 class="text-[10px] font-black uppercase tracking-widest text-gray-500 mb-4">Categories</h5>
+            <ul class="space-y-2 text-xs text-gray-300">
+                <li><a href="#" class="hover:text-red-400 transition-colors">Theology & DEI</a></li>
+                <li><a href="#" class="hover:text-red-400 transition-colors">Leadership Case Studies</a></li>
+                <li><a href="#" class="hover:text-red-400 transition-colors">Global Church Trends</a></li>
+                <li><a href="#" class="hover:text-red-400 transition-colors">IDI Analysis</a></li>
+                <li><a href="#" class="hover:text-red-400 transition-colors">Global Mission</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="border-t border-white/10">
+        <div class="max-w-7xl mx-auto px-6 py-6 flex flex-col md:flex-row items-center justify-between gap-4">
+            <p class="text-[10px] text-gray-600 uppercase tracking-widest">© 2026 Sam Kim. All Rights Reserved.</p>
+            <div class="flex gap-6 text-[10px] font-bold uppercase tracking-widest text-gray-400">
+                <a href="#" class="hover:text-red-400 transition-colors">LinkedIn</a>
+                <a href="#" class="hover:text-red-400 transition-colors">Instagram</a>
+                <a href="mailto:skim@sfpby.org" class="hover:text-red-400 transition-colors">Email</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- ═══════════════════════ NOTION DYNAMIC POSTS ═══════════════════════ -->
+<script>
+(function() {
+    const CAT_LABELS = {
+        'special-report': 'Special Report',
+        'spotlight':      'Spotlight',
+        'case-studies':   'Case Studies & Insights',
+        'deep-dive':      'Deep Dive Blog',
+    };
+
+    function fmtDate(str) {
+        if (!str) return '';
+        const d = new Date(str + 'T00:00:00');
+        return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    }
+
+    function postUrl(id) { return '/post.html?id=' + id; }
+
+    function heroHtml(p) {
+        const img = p.cover || 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&q=80&w=2070';
+        return `
+        <div class="img-zoom aspect-[16/9] bg-gray-200 mb-6 cursor-pointer">
+            <a href="${postUrl(p.id)}"><img src="${img}" alt="${p.title}" class="w-full h-full object-cover"></a>
+        </div>
+        <div class="space-y-4">
+            <div class="flex items-center gap-3">
+                <span class="tag bg-red-600 text-white text-[10px] font-black px-3 py-1 uppercase">Special Report</span>
+                <span class="text-[10px] text-gray-400 uppercase font-bold tracking-widest">${fmtDate(p.date)}</span>
+            </div>
+            <h1 class="text-4xl md:text-5xl leading-tight font-black cursor-pointer hover:text-red-700 transition-colors">
+                <a href="${postUrl(p.id)}">${p.title}</a>
+            </h1>
+            <p class="text-gray-600 text-lg leading-relaxed max-w-2xl">${p.excerpt}</p>
+            <div class="flex gap-3 pt-2">
+                <a href="${postUrl(p.id)}" class="text-[10px] font-black uppercase tracking-widest text-red-600 hover:underline">Read Full Report →</a>
+            </div>
+        </div>`;
+    }
+
+    function spotlightHtml(posts) {
+        return posts.map((p, i) => {
+            const img = p.cover || 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&q=80&w=800';
+            const dark = i === 1;
+            return `
+            <article class="card-hover cursor-pointer group ${dark ? 'bg-black text-white' : 'bg-white border border-gray-200'}">
+                <a href="${postUrl(p.id)}" class="img-zoom ${dark ? 'h-48' : 'aspect-[4/3]'} block">
+                    <img src="${img}" class="w-full h-full object-cover ${dark ? 'opacity-50' : ''}" alt="">
+                </a>
+                <div class="p-5">
+                    <span class="tag text-[9px] font-black uppercase tracking-widest ${dark ? 'text-red-400' : 'text-red-600'}">Spotlight</span>
+                    <h4 class="text-lg font-bold leading-snug mt-2 mb-2 ${dark ? 'group-hover:text-red-300' : 'group-hover:text-red-700'} transition-colors" style="font-family:'Playfair Display',serif;">
+                        <a href="${postUrl(p.id)}">${p.title}</a>
+                    </h4>
+                    <p class="text-xs ${dark ? 'text-gray-400' : 'text-gray-500'} leading-relaxed">${p.excerpt}</p>
+                    <div class="mt-4 pt-4 border-t ${dark ? 'border-white/10' : 'border-gray-100'} flex items-center justify-between">
+                        <span class="text-[10px] ${dark ? 'text-gray-500' : 'text-gray-400'}">${fmtDate(p.date)}</span>
+                    </div>
+                </div>
+            </article>`;
+        }).join('');
+    }
+
+    function caseStudyHtml(p) {
+        const img = p.cover || 'https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&q=80&w=600';
+        return `
+        <article class="cursor-pointer group">
+            <a href="${postUrl(p.id)}" class="img-zoom aspect-square bg-gray-200 mb-4 block">
+                <img src="${img}" class="w-full h-full object-cover" alt="">
+            </a>
+            <span class="tag text-[9px] font-black text-red-600 uppercase tracking-widest">Case Studies</span>
+            <h4 class="text-sm font-bold leading-snug mt-1 group-hover:text-red-600 transition-colors" style="font-family:'Playfair Display',serif;">
+                <a href="${postUrl(p.id)}">${p.title}</a>
+            </h4>
+            <p class="text-xs text-gray-400 mt-1">${fmtDate(p.date)}</p>
+        </article>`;
+    }
+
+    function blogFeaturedHtml(p) {
+        const img = p.cover || 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&q=80&w=1200';
+        return `
+        <article class="cursor-pointer group">
+            <a href="${postUrl(p.id)}" class="img-zoom aspect-[16/9] mb-6 block">
+                <img src="${img}" class="w-full h-full object-cover" alt="">
+            </a>
+            <div class="flex items-center gap-3 mb-3">
+                <span class="bg-black text-white text-[9px] font-black px-3 py-1 uppercase tracking-widest">Featured</span>
+                <span class="text-[9px] text-gray-400">Deep Dive Blog</span>
+                <span class="text-[9px] text-gray-400">·</span>
+                <span class="text-[9px] text-gray-400">${fmtDate(p.date)}</span>
+            </div>
+            <h3 class="text-2xl md:text-3xl font-bold leading-tight mb-3 group-hover:text-red-700 transition-colors" style="font-family:'Playfair Display',serif;">
+                <a href="${postUrl(p.id)}">${p.title}</a>
+            </h3>
+            <p class="text-gray-600 text-sm leading-relaxed mb-4">${p.excerpt}</p>
+            <a href="${postUrl(p.id)}" class="text-[10px] font-black uppercase tracking-widest text-red-600 hover:underline">Read Full Article →</a>
+        </article>`;
+    }
+
+    function blogListHtml(posts) {
+        return posts.map(p => {
+            const img = p.cover || 'https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&q=80&w=300';
+            return `
+            <article class="cursor-pointer group flex gap-4 py-5 border-b border-gray-200">
+                <a href="${postUrl(p.id)}" class="img-zoom w-20 h-16 shrink-0 block">
+                    <img src="${img}" class="w-full h-full object-cover" alt="">
+                </a>
+                <div>
+                    <span class="text-[9px] font-black text-red-600 uppercase tracking-widest">Deep Dive Blog</span>
+                    <h5 class="text-sm font-bold leading-snug mt-0.5 group-hover:text-red-600 transition-colors">
+                        <a href="${postUrl(p.id)}">${p.title}</a>
+                    </h5>
+                    <p class="text-[10px] text-gray-400 mt-1">${fmtDate(p.date)}</p>
+                </div>
+            </article>`;
+        }).join('');
+    }
+
+    async function loadNotionPosts() {
+        try {
+            const res  = await fetch('/api/posts');
+            if (!res.ok) return; // silently keep static content
+            const data = await res.json();
+            const posts = data.posts || [];
+
+            const byCategory = {
+                'special-report': posts.filter(p => p.category === 'special-report'),
+                'spotlight':      posts.filter(p => p.category === 'spotlight'),
+                'case-studies':   posts.filter(p => p.category === 'case-studies'),
+                'deep-dive':      posts.filter(p => p.category === 'deep-dive'),
+            };
+
+            // Hero: latest special report
+            if (byCategory['special-report'].length > 0) {
+                const heroEl = document.querySelector('#home .lg\\:col-span-8');
+                if (heroEl) heroEl.innerHTML = heroHtml(byCategory['special-report'][0]);
+            }
+
+            // Spotlight: up to 3 posts
+            if (byCategory['spotlight'].length > 0) {
+                const spotEl = document.querySelector('#home section.grid.md\\:grid-cols-3');
+                if (spotEl) spotEl.innerHTML = spotlightHtml(byCategory['spotlight'].slice(0, 3));
+            }
+
+            // Case Studies: up to 4 posts
+            if (byCategory['case-studies'].length > 0) {
+                const caseEl = document.querySelector('#insights + section');
+                if (caseEl) caseEl.innerHTML = byCategory['case-studies'].slice(0, 4).map(caseStudyHtml).join('');
+            }
+
+            // Blog: 1 featured + up to 4 list
+            if (byCategory['deep-dive'].length > 0) {
+                const blogFeat = document.querySelector('#blog + section .lg\\:col-span-7');
+                const blogList = document.querySelector('#blog + section .lg\\:col-span-5 > .space-y-0 ~ article')?.parentElement;
+                const [first, ...rest] = byCategory['deep-dive'];
+                if (blogFeat) blogFeat.innerHTML = blogFeaturedHtml(first);
+                if (blogList) blogList.innerHTML =
+                    '<h4 class="text-xs font-black uppercase tracking-widest border-b-2 border-black pb-3 mb-0">Recent Posts</h4>' +
+                    blogListHtml(rest.slice(0, 4));
+            }
+
+        } catch (e) {
+            // API not available — static placeholder content remains
+        }
+    }
+
+    loadNotionPosts();
+})();
+</script>
+
+<!-- ══════════════════════════════════════════════════════
+     LOGIN MODAL
+══════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-login">
+  <div class="modal-box">
+    <div class="flex items-center justify-between px-8 pt-8 pb-6 border-b border-gray-100">
+      <div>
+        <p class="text-[9px] uppercase tracking-[.2em] text-red-600 font-black mb-1">Member Portal</p>
+        <h3 style="font-family:'Playfair Display',serif;" class="text-2xl font-black">Login</h3>
+      </div>
+      <button onclick="closeModal('login')" class="text-gray-400 hover:text-black text-2xl leading-none">&times;</button>
+    </div>
+    <div class="px-8 py-7 space-y-5">
+      <div>
+        <label class="auth-label">Email</label>
+        <input id="login-email" type="email" class="auth-input" placeholder="your@email.com">
+        <p class="err-msg" id="login-email-err">Please enter a valid email address.</p>
+      </div>
+      <div>
+        <label class="auth-label">Password</label>
+        <div class="relative">
+          <input id="login-pw" type="password" class="auth-input" placeholder="Enter your password">
+          <button type="button" onclick="togglePw('login-pw')" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black text-xs">Show</button>
+        </div>
+        <p class="err-msg" id="login-pw-err">Incorrect password.</p>
+      </div>
+      <p class="err-msg show hidden" id="login-general-err">Please check your email or password.</p>
+      <button class="auth-btn" onclick="doLogin()">Login</button>
+      <div class="text-center text-xs text-gray-400 pt-2">
+        Don't have an account?
+        <button onclick="switchModal('login','register')" class="text-black font-bold underline ml-1">Sign Up</button>
+      </div>
+
+      <!-- Admin Mode -->
+      <div class="border-t border-gray-100 pt-5 mt-2">
+        <button onclick="toggleAdminPanel()" class="w-full text-[10px] text-gray-300 hover:text-gray-500 uppercase tracking-[.2em] font-bold transition-colors flex items-center justify-center gap-2">
+          <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><circle cx="12" cy="12" r="3"/></svg>
+          Admin Mode
+        </button>
+        <div id="admin-panel" class="hidden mt-4 space-y-3">
+          <div class="relative">
+            <input id="admin-mode-pw" type="password" class="auth-input pr-16" placeholder="Admin password"
+                   onkeydown="if(event.key==='Enter') doAdminMode()">
+            <button type="button" onclick="togglePw('admin-mode-pw')"
+                    class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black text-xs font-bold">Show</button>
+          </div>
+          <p id="admin-mode-err" class="text-[11px] text-red-600 font-bold hidden">Incorrect admin password.</p>
+          <button onclick="doAdminMode()"
+                  class="w-full bg-gray-900 text-white py-3 font-black text-[10px] uppercase tracking-widest hover:bg-red-600 transition-colors">
+            Enter Admin →
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     REGISTER MODAL (3-step)
+══════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-register">
+  <div class="modal-box">
+    <div class="flex items-center justify-between px-8 pt-8 pb-4 border-b border-gray-100">
+      <div>
+        <p class="text-[9px] uppercase tracking-[.2em] text-red-600 font-black mb-1">Member Portal</p>
+        <h3 style="font-family:'Playfair Display',serif;" class="text-2xl font-black">Sign Up</h3>
+      </div>
+      <button onclick="closeModal('register')" class="text-gray-400 hover:text-black text-2xl leading-none">&times;</button>
+    </div>
+
+    <!-- Step indicator -->
+    <div class="flex items-center gap-2 px-8 py-4 border-b border-gray-100">
+      <div class="step-dot active" id="reg-dot-1"></div>
+      <div class="flex-1 h-px bg-gray-200"></div>
+      <div class="step-dot" id="reg-dot-2"></div>
+      <div class="flex-1 h-px bg-gray-200"></div>
+      <div class="step-dot" id="reg-dot-3"></div>
+      <div class="text-[9px] uppercase tracking-widest text-gray-400 ml-3" id="reg-step-label">Step 1 / 3</div>
+    </div>
+
+    <!-- STEP 1: Account -->
+    <div id="reg-step-1" class="px-8 py-7 space-y-5">
+      <p class="text-xs font-black uppercase tracking-widest text-gray-500">Account Info</p>
+      <div>
+        <label class="auth-label">Full Name *</label>
+        <input id="reg-name" type="text" class="auth-input" placeholder="Your full name">
+        <p class="err-msg" id="reg-name-err">Please enter your name.</p>
+      </div>
+      <div>
+        <label class="auth-label">Email *</label>
+        <input id="reg-email" type="email" class="auth-input" placeholder="your@email.com">
+        <p class="err-msg" id="reg-email-err">Please enter a valid email address.</p>
+      </div>
+      <div>
+        <label class="auth-label">Password *</label>
+        <div class="relative">
+          <input id="reg-pw" type="password" class="auth-input" placeholder="Min. 8 characters, letters + numbers">
+          <button type="button" onclick="togglePw('reg-pw')" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black text-xs">Show</button>
+        </div>
+        <p class="err-msg" id="reg-pw-err">Password must be at least 8 characters and include letters and numbers.</p>
+      </div>
+      <div>
+        <label class="auth-label">Confirm Password *</label>
+        <input id="reg-pw2" type="password" class="auth-input" placeholder="Re-enter your password">
+        <p class="err-msg" id="reg-pw2-err">Passwords do not match.</p>
+      </div>
+      <button class="auth-btn" onclick="regStep1()">Next →</button>
+      <div class="text-center text-xs text-gray-400 pt-1">
+        Already have an account?
+        <button onclick="switchModal('register','login')" class="text-black font-bold underline ml-1">Login</button>
+      </div>
+    </div>
+
+    <!-- STEP 2: Profile -->
+    <div id="reg-step-2" class="px-8 py-7 space-y-5 hidden">
+      <p class="text-xs font-black uppercase tracking-widest text-gray-500">Personal Info</p>
+      <div>
+        <label class="auth-label">Phone Number *</label>
+        <input id="reg-phone" type="tel" class="auth-input" placeholder="e.g. 415-000-0000">
+        <p class="err-msg" id="reg-phone-err">Please enter a valid phone number.</p>
+      </div>
+      <div>
+        <label class="auth-label">Date of Birth *</label>
+        <input id="reg-dob" type="date" class="auth-input">
+        <p class="err-msg" id="reg-dob-err">Please select your date of birth.</p>
+      </div>
+      <div>
+        <label class="auth-label">Address *</label>
+        <input id="reg-addr" type="text" class="auth-input mb-2" placeholder="City, State">
+        <input id="reg-addr2" type="text" class="auth-input" placeholder="Street address (optional)">
+        <p class="err-msg" id="reg-addr-err">Please enter your address.</p>
+      </div>
+      <div>
+        <label class="auth-label">Denomination *</label>
+        <select id="reg-denomination" class="auth-input bg-white">
+          <option value="">-- Select Denomination --</option>
+          <optgroup label="U.S. Denominations">
+            <option>PCUSA (Presbyterian Church USA)</option>
+            <option>PCA (Presbyterian Church in America)</option>
+            <option>UMC (United Methodist Church)</option>
+            <option>ELCA (Evangelical Lutheran Church)</option>
+            <option>SBC (Southern Baptist Convention)</option>
+            <option>ABC (American Baptist Churches)</option>
+            <option>Episcopal Church</option>
+          </optgroup>
+          <optgroup label="Korean Denominations">
+            <option>Hapdong Presbyterian</option>
+            <option>Tonghap Presbyterian</option>
+            <option>PROK (Presbyterian Church of Korea)</option>
+            <option>Korean Methodist Church</option>
+            <option>Assemblies of God Korea</option>
+            <option>Korean Baptist</option>
+            <option>Korean Holiness Church</option>
+            <option>Full Gospel</option>
+          </optgroup>
+          <option value="other">Other (please specify)</option>
+        </select>
+        <input id="reg-denomination-other" type="text" class="auth-input mt-2 hidden" placeholder="Enter denomination name">
+        <p class="err-msg" id="reg-denom-err">Please select a denomination.</p>
+      </div>
+      <div class="flex gap-3">
+        <button class="auth-btn outline" onclick="regGoStep(1)">← Back</button>
+        <button class="auth-btn" onclick="regStep2()">Next →</button>
+      </div>
+    </div>
+
+    <!-- STEP 3: Email Verify -->
+    <div id="reg-step-3" class="px-8 py-7 space-y-5 hidden">
+      <div class="text-center">
+        <div class="w-14 h-14 bg-red-50 border-2 border-red-200 rounded-full flex items-center justify-center mx-auto mb-4">
+          <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+        </div>
+        <h4 class="font-black text-lg mb-1">Email Verification</h4>
+        <p class="text-xs text-gray-500 leading-relaxed">
+          A 6-digit verification code has been sent to<br>
+          <span id="verify-email-display" class="font-bold text-black"></span>.
+        </p>
+      </div>
+      <!-- Dev fallback: shown when EmailJS not configured -->
+      <div id="dev-code-banner">
+        <p class="text-[10px] font-black uppercase tracking-widest text-yellow-700 mb-1">Dev Mode — No real email sent</p>
+        <p class="text-sm text-yellow-900">Your code: <span id="dev-code-display" class="font-black text-lg tracking-widest"></span></p>
+      </div>
+
+      <div class="flex justify-center gap-2 py-2">
+        <input class="code-box" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]">
+        <input class="code-box" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]">
+        <input class="code-box" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]">
+        <input class="code-box" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]">
+        <input class="code-box" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]">
+        <input class="code-box" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]">
+      </div>
+      <p class="err-msg text-center" id="verify-err">Incorrect code. Please try again.</p>
+      <p class="text-center text-[10px] text-gray-400" id="verify-timer">Code expires in: <span id="timer-count" class="font-black text-black">05:00</span></p>
+      <button class="auth-btn" onclick="doVerify()">Verify</button>
+      <div class="text-center text-xs text-gray-400 pt-1">
+        Didn't receive a code?
+        <button onclick="resendCode()" class="text-black font-bold underline ml-1" id="resend-btn">Resend</button>
+        <span id="resend-msg" class="text-red-600 font-bold ml-1 hidden">Resent!</span>
+      </div>
+      <div class="flex gap-3">
+        <button class="auth-btn outline" onclick="regGoStep(2)">← Back</button>
+      </div>
+    </div>
+
+    <!-- STEP: Success -->
+    <div id="reg-step-success" class="px-8 py-12 text-center hidden">
+      <div class="success-icon">
+        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+      </div>
+      <h4 style="font-family:'Playfair Display',serif;" class="text-2xl font-black mb-2">Welcome!</h4>
+      <p class="text-sm text-gray-500 leading-relaxed mb-6">
+        <span id="success-name" class="font-bold text-black"></span>, welcome to Sam Kim Insights. You're now a member.
+      </p>
+      <button class="auth-btn" onclick="finishRegister()">Get Started →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     PROFILE MODAL
+══════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-profile">
+  <div class="modal-box">
+    <div class="flex items-center justify-between px-8 pt-8 pb-6 border-b border-gray-100">
+      <div>
+        <p class="text-[9px] uppercase tracking-[.2em] text-red-600 font-black mb-1">Member Portal</p>
+        <h3 style="font-family:'Playfair Display',serif;" class="text-2xl font-black">My Profile</h3>
+      </div>
+      <button onclick="closeModal('profile')" class="text-gray-400 hover:text-black text-2xl leading-none">&times;</button>
+    </div>
+    <div class="px-8 py-7 space-y-4">
+      <div class="flex items-center gap-4 pb-5 border-b border-gray-100">
+        <div class="user-avatar text-xl w-14 h-14" id="profile-avatar-big"></div>
+        <div>
+          <div id="profile-name-display" class="font-black text-lg"></div>
+          <div id="profile-email-display" class="text-xs text-gray-400 mt-0.5"></div>
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-4 pt-2 text-sm">
+        <div><span class="auth-label">Phone</span><div id="p-phone" class="font-medium">—</div></div>
+        <div><span class="auth-label">Date of Birth</span><div id="p-dob" class="font-medium">—</div></div>
+        <div class="col-span-2"><span class="auth-label">Address</span><div id="p-addr" class="font-medium">—</div></div>
+        <div class="col-span-2"><span class="auth-label">Denomination</span><div id="p-denom" class="font-medium">—</div></div>
+        <div class="col-span-2"><span class="auth-label">Email Verification</span><div class="text-green-600 font-bold text-xs">✓ Verified</div></div>
+      </div>
+      <div class="pt-4 border-t border-gray-100">
+        <button class="auth-btn" onclick="closeModal('profile')">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+    /* ── Nav ── */
+    function toggleMenu() {
+        const menu = document.getElementById('mobile-menu');
+        menu.classList.toggle('open');
+    }
+    document.querySelectorAll('.cat-item').forEach(item => {
+        item.addEventListener('click', () => {
+            document.querySelectorAll('.cat-item').forEach(i => i.classList.remove('active'));
+            item.classList.add('active');
+        });
+    });
+
+    /* ══════════════════════════════════════
+       AUTH STATE
+    ══════════════════════════════════════ */
+    let _verifyCode = '';
+    let _timerInterval = null;
+    let _pendingUser = {};
+
+    function getUsers() { return JSON.parse(localStorage.getItem('ski_users') || '{}'); }
+    function saveUsers(u) { localStorage.setItem('ski_users', JSON.stringify(u)); }
+    function getSession() { return JSON.parse(localStorage.getItem('ski_session') || 'null'); }
+    function saveSession(u) { localStorage.setItem('ski_session', JSON.stringify(u)); }
+    function clearSession() { localStorage.removeItem('ski_session'); }
+
+    function initAuth() {
+        const s = getSession();
+        if (s) renderLoggedIn(s);
+        else renderGuest();
+    }
+
+    function renderLoggedIn(user) {
+        document.getElementById('auth-guest').classList.add('hidden');
+        document.getElementById('auth-user').classList.remove('hidden');
+        const initials = user.name ? user.name.slice(0,2).toUpperCase() : user.email.slice(0,2).toUpperCase();
+        document.getElementById('nav-avatar').textContent = initials;
+        document.getElementById('nav-username').textContent = user.name || user.email;
+    }
+
+    function renderGuest() {
+        document.getElementById('auth-guest').classList.remove('hidden');
+        document.getElementById('auth-user').classList.add('hidden');
+    }
+
+    function toggleDropdown() {
+        document.getElementById('user-dropdown').classList.toggle('open');
+    }
+    document.addEventListener('click', e => {
+        if (!document.getElementById('auth-user').contains(e.target))
+            document.getElementById('user-dropdown').classList.remove('open');
+    });
+
+    function logout() {
+        clearSession();
+        renderGuest();
+        document.getElementById('user-dropdown').classList.remove('open');
+    }
+
+    /* ══════════════════════════════════════
+       MODALS
+    ══════════════════════════════════════ */
+    function openModal(name) {
+        document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('open'));
+        document.getElementById('modal-' + name).classList.add('open');
+        document.body.style.overflow = 'hidden';
+        if (name === 'profile') fillProfile();
+    }
+    function closeModal(name) {
+        document.getElementById('modal-' + name).classList.remove('open');
+        document.body.style.overflow = '';
+    }
+    function switchModal(from, to) { closeModal(from); openModal(to); }
+
+    document.querySelectorAll('.modal-overlay').forEach(overlay => {
+        overlay.addEventListener('click', e => {
+            if (e.target === overlay) {
+                overlay.classList.remove('open');
+                document.body.style.overflow = '';
+            }
+        });
+    });
+
+    /* ══════════════════════════════════════
+       UTILITIES
+    ══════════════════════════════════════ */
+    function togglePw(id) {
+        const el = document.getElementById(id);
+        el.type = el.type === 'password' ? 'text' : 'password';
+    }
+    function setErr(id, show) {
+        const el = document.getElementById(id);
+        if (el) el.classList.toggle('show', show);
+    }
+    function setInputErr(id, show) {
+        const el = document.getElementById(id);
+        if (el) el.classList.toggle('error', show);
+    }
+    function isValidEmail(e) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e); }
+    function isValidPw(p) { return p.length >= 8 && /[A-Za-z]/.test(p) && /[0-9]/.test(p); }
+    function isValidPhone(p) { return /^[0-9\-\+\(\)\s]{7,15}$/.test(p); }
+
+    /* ══════════════════════════════════════
+       LOGIN
+    ══════════════════════════════════════ */
+    function doLogin() {
+        const email = document.getElementById('login-email').value.trim();
+        const pw = document.getElementById('login-pw').value;
+        let ok = true;
+
+        if (!isValidEmail(email)) { setErr('login-email-err', true); setInputErr('login-email', true); ok = false; }
+        else { setErr('login-email-err', false); setInputErr('login-email', false); }
+        if (!pw) { setErr('login-pw-err', true); setInputErr('login-pw', true); ok = false; }
+        else { setErr('login-pw-err', false); setInputErr('login-pw', false); }
+        if (!ok) return;
+
+        const users = getUsers();
+        const user = users[email.toLowerCase()];
+        if (!user || user.password !== pw) {
+            document.getElementById('login-general-err').classList.remove('hidden');
+            document.getElementById('login-general-err').classList.add('show');
+            return;
+        }
+        document.getElementById('login-general-err').classList.add('hidden');
+        saveSession(user);
+        renderLoggedIn(user);
+        closeModal('login');
+    }
+
+    /* ══════════════════════════════════════
+       REGISTER — STEP 1
+    ══════════════════════════════════════ */
+    function regStep1() {
+        const name = document.getElementById('reg-name').value.trim();
+        const email = document.getElementById('reg-email').value.trim();
+        const pw = document.getElementById('reg-pw').value;
+        const pw2 = document.getElementById('reg-pw2').value;
+        let ok = true;
+
+        if (!name) { setErr('reg-name-err', true); setInputErr('reg-name', true); ok = false; }
+        else { setErr('reg-name-err', false); setInputErr('reg-name', false); }
+
+        if (!isValidEmail(email)) { setErr('reg-email-err', true); setInputErr('reg-email', true); ok = false; }
+        else {
+            const users = getUsers();
+            if (users[email.toLowerCase()]) {
+                document.getElementById('reg-email-err').textContent = 'This email is already registered.';
+                setErr('reg-email-err', true); setInputErr('reg-email', true); ok = false;
+            } else {
+                document.getElementById('reg-email-err').textContent = 'Please enter a valid email address.';
+                setErr('reg-email-err', false); setInputErr('reg-email', false);
+            }
+        }
+        if (!isValidPw(pw)) { setErr('reg-pw-err', true); setInputErr('reg-pw', true); ok = false; }
+        else { setErr('reg-pw-err', false); setInputErr('reg-pw', false); }
+
+        if (pw !== pw2) { setErr('reg-pw2-err', true); setInputErr('reg-pw2', true); ok = false; }
+        else { setErr('reg-pw2-err', false); setInputErr('reg-pw2', false); }
+
+        if (!ok) return;
+        _pendingUser.name = name;
+        _pendingUser.email = email.toLowerCase();
+        _pendingUser.password = pw;
+        regGoStep(2);
+    }
+
+    /* REGISTER — STEP 2 */
+    function regStep2() {
+        const phone = document.getElementById('reg-phone').value.trim();
+        const dob = document.getElementById('reg-dob').value;
+        const addr = document.getElementById('reg-addr').value.trim();
+        const addr2 = document.getElementById('reg-addr2').value.trim();
+        const denomSel = document.getElementById('reg-denomination').value;
+        const denomOther = document.getElementById('reg-denomination-other').value.trim();
+        const denom = denomSel === 'other' ? denomOther : denomSel;
+        let ok = true;
+
+        if (!isValidPhone(phone)) { setErr('reg-phone-err', true); setInputErr('reg-phone', true); ok = false; }
+        else { setErr('reg-phone-err', false); setInputErr('reg-phone', false); }
+
+        if (!dob) { setErr('reg-dob-err', true); setInputErr('reg-dob', true); ok = false; }
+        else { setErr('reg-dob-err', false); setInputErr('reg-dob', false); }
+
+        if (!addr) { setErr('reg-addr-err', true); setInputErr('reg-addr', true); ok = false; }
+        else { setErr('reg-addr-err', false); setInputErr('reg-addr', false); }
+
+        if (!denom) { setErr('reg-denom-err', true); setInputErr('reg-denomination', true); ok = false; }
+        else { setErr('reg-denom-err', false); setInputErr('reg-denomination', false); }
+
+        if (!ok) return;
+        _pendingUser.phone = phone;
+        _pendingUser.dob = dob;
+        _pendingUser.address = addr + (addr2 ? ', ' + addr2 : '');
+        _pendingUser.denomination = denom;
+        regGoStep(3);
+        startVerify();
+    }
+
+    /* REGISTER — STEP NAV */
+    function regGoStep(n) {
+        [1,2,3].forEach(i => {
+            document.getElementById('reg-step-' + i).classList.toggle('hidden', i !== n);
+            document.getElementById('reg-dot-' + i).classList.toggle('active', i <= n);
+        });
+        document.getElementById('reg-step-label').textContent = 'Step ' + n + ' / 3';
+    }
+
+    /* ══════════════════════════════════════
+       EMAIL VERIFICATION
+    ══════════════════════════════════════ */
+    function startVerify() {
+        _verifyCode = Math.floor(100000 + Math.random() * 900000).toString();
+
+        document.getElementById('verify-email-display').textContent = _pendingUser.email;
+        document.querySelectorAll('.code-box').forEach(b => b.value = '');
+
+        // Auto-advance between code boxes
+        const boxes = document.querySelectorAll('.code-box');
+        boxes.forEach((box, idx) => {
+            box.oninput = () => {
+                box.value = box.value.replace(/\D/g,'').slice(-1);
+                if (box.value && idx < boxes.length - 1) boxes[idx + 1].focus();
+            };
+            box.onkeydown = e => {
+                if (e.key === 'Backspace' && !box.value && idx > 0) boxes[idx - 1].focus();
+            };
+        });
+
+        setErr('verify-err', false);
+
+        if (EMAILJS_ENABLED) {
+            // 실제 이메일 발송
+            emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+                to_email: _pendingUser.email,
+                name: _pendingUser.name,
+                code: _verifyCode
+            }).then(() => {
+                showToast('✉ Verification code sent to ' + _pendingUser.email);
+            }).catch(err => {
+                console.error('EmailJS error:', err);
+                showToast('Failed to send email. Please click Resend.');
+                showDevCode();
+            });
+            document.getElementById('dev-code-banner').classList.remove('show');
+        } else {
+            // Dev 모드: 화면에 코드 표시
+            showDevCode();
+        }
+
+        startTimer(300);
+    }
+
+    function showDevCode() {
+        const banner = document.getElementById('dev-code-banner');
+        document.getElementById('dev-code-display').textContent = _verifyCode;
+        banner.classList.add('show');
+    }
+
+    function startTimer(seconds) {
+        clearInterval(_timerInterval);
+        let remaining = seconds;
+        const el = document.getElementById('timer-count');
+        function tick() {
+            const m = String(Math.floor(remaining / 60)).padStart(2,'0');
+            const s = String(remaining % 60).padStart(2,'0');
+            el.textContent = m + ':' + s;
+            if (remaining <= 0) {
+                clearInterval(_timerInterval);
+                el.textContent = '만료됨';
+                el.classList.add('text-red-600');
+            }
+            remaining--;
+        }
+        tick();
+        _timerInterval = setInterval(tick, 1000);
+    }
+
+    function resendCode() {
+        _verifyCode = Math.floor(100000 + Math.random() * 900000).toString();
+        document.querySelectorAll('.code-box').forEach(b => b.value = '');
+        setErr('verify-err', false);
+        startTimer(300);
+
+        if (EMAILJS_ENABLED) {
+            emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+                to_email: _pendingUser.email,
+                name: _pendingUser.name,
+                code: _verifyCode
+            }).then(() => showToast('✉ Verification code resent.'))
+              .catch(() => { showToast('Resend failed. Please try again shortly.'); showDevCode(); });
+        } else {
+            showDevCode();
+        }
+
+        const msg = document.getElementById('resend-msg');
+        msg.classList.remove('hidden');
+        setTimeout(() => msg.classList.add('hidden'), 3000);
+    }
+
+    function doVerify() {
+        const entered = Array.from(document.querySelectorAll('.code-box')).map(b => b.value).join('');
+        if (entered.length < 6) { setErr('verify-err', true); return; }
+        if (entered !== _verifyCode) { setErr('verify-err', true); return; }
+
+        clearInterval(_timerInterval);
+        setErr('verify-err', false);
+
+        // Save user
+        _pendingUser.verified = true;
+        _pendingUser.joinedAt = new Date().toISOString();
+        const users = getUsers();
+        users[_pendingUser.email] = _pendingUser;
+        saveUsers(users);
+
+        // Show success
+        [1,2,3].forEach(i => document.getElementById('reg-step-' + i).classList.add('hidden'));
+        document.getElementById('reg-step-success').classList.remove('hidden');
+        document.getElementById('success-name').textContent = _pendingUser.name;
+        document.querySelectorAll('.step-dot').forEach(d => d.classList.add('active'));
+        document.getElementById('reg-step-label').textContent = '완료!';
+    }
+
+    function finishRegister() {
+        saveSession(_pendingUser);
+        renderLoggedIn(_pendingUser);
+        closeModal('register');
+        // reset register form
+        setTimeout(() => {
+            regGoStep(1);
+            document.getElementById('reg-step-success').classList.add('hidden');
+        }, 400);
+    }
+
+    /* ══════════════════════════════════════
+       PROFILE
+    ══════════════════════════════════════ */
+    function fillProfile() {
+        const s = getSession();
+        if (!s) return;
+        const initials = (s.name || s.email).slice(0,2).toUpperCase();
+        document.getElementById('profile-avatar-big').textContent = initials;
+        document.getElementById('profile-name-display').textContent = s.name || '—';
+        document.getElementById('profile-email-display').textContent = s.email;
+        document.getElementById('p-phone').textContent = s.phone || '—';
+        document.getElementById('p-dob').textContent = s.dob ? new Date(s.dob).toLocaleDateString('ko-KR') : '—';
+        document.getElementById('p-addr').textContent = s.address || '—';
+        document.getElementById('p-denom').textContent = s.denomination || '—';
+    }
+
+    /* Denomination "other" toggle */
+    document.getElementById('reg-denomination').addEventListener('change', function() {
+        document.getElementById('reg-denomination-other').classList.toggle('hidden', this.value !== 'other');
+    });
+
+    /* ══════════════════════════════════════
+       EMAILJS CONFIG
+       1. emailjs.com 에서 무료 계정 생성
+       2. Email Service 연결 (Gmail 등)
+       3. Template 생성 — 변수: {{to_email}}, {{code}}, {{name}}
+       4. 아래 3개 값 입력
+    ══════════════════════════════════════ */
+    const EMAILJS_PUBLIC_KEY  = '';   // e.g. 'user_xxxxxxxxxx'
+    const EMAILJS_SERVICE_ID  = '';   // e.g. 'service_xxxxxxx'
+    const EMAILJS_TEMPLATE_ID = '';   // e.g. 'template_xxxxxxx'
+    const EMAILJS_ENABLED = EMAILJS_PUBLIC_KEY && EMAILJS_SERVICE_ID && EMAILJS_TEMPLATE_ID;
+    if (EMAILJS_ENABLED) emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+
+    /* ── Toast ── */
+    function showToast(msg, duration = 4000) {
+        let t = document.getElementById('toast');
+        t.textContent = msg;
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), duration);
+    }
+
+    /* ══════════════════════════════════════
+       ADMIN MODE
+    ══════════════════════════════════════ */
+    const ADMIN_PASSWORD = 'samkim2026';
+
+    function toggleAdminPanel() {
+        const panel = document.getElementById('admin-panel');
+        panel.classList.toggle('hidden');
+        if (!panel.classList.contains('hidden')) {
+            document.getElementById('admin-mode-pw').focus();
+        }
+    }
+
+    function doAdminMode() {
+        const pw = document.getElementById('admin-mode-pw').value;
+        if (pw === ADMIN_PASSWORD) {
+            sessionStorage.setItem('admin_auth', '1');
+            window.location.href = 'admin.html';
+        } else {
+            document.getElementById('admin-mode-err').classList.remove('hidden');
+            document.getElementById('admin-mode-pw').style.borderColor = '#dc2626';
+            setTimeout(() => {
+                document.getElementById('admin-mode-pw').style.borderColor = '';
+            }, 2000);
+        }
+    }
+
+    /* ── Init ── */
+    initAuth();
+</script>
+</body>
+</html>

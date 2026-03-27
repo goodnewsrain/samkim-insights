@@ -1,0 +1,177 @@
+/*
+Theme Name: Sam Kim Insights
+Theme URI: https://samkiminsights.com
+Author: Sam Kim
+Author URI: https://samkiminsights.com
+Description: DEI & Intercultural Leadership magazine theme for Sam Kim Insights
+Version: 1.0
+Requires at least: 6.0
+Tested up to: 6.7
+License: Private
+Tags: magazine, news, dei, leadership
+*/
+
+/* ── Korean font ── */
+@font-face {
+    font-family: 'KoreanBody';
+    src: local('Malgun Gothic'), local('맑은 고딕');
+    unicode-range: U+AC00-D7A3, U+1100-11FF, U+3130-318F, U+A960-A97F, U+D7B0-D7FF;
+    font-weight: 100 900;
+}
+@font-face {
+    font-family: 'KoreanHead';
+    src: local('Malgun Gothic Bold'), local('Malgun Gothic'), local('맑은 고딕');
+    unicode-range: U+AC00-D7A3, U+1100-11FF, U+3130-318F, U+A960-A97F, U+D7B0-D7FF;
+    font-weight: 100 900;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { font-family: 'KoreanBody', 'Inter', sans-serif; background: #f8f7f4; color: #111; margin: 0; }
+h1, h2, h3, h4 { font-family: 'KoreanHead', 'Playfair Display', serif; }
+
+/* Ticker */
+.ticker-wrap { overflow: hidden; white-space: nowrap; }
+.ticker-inner { display: inline-block; animation: ticker 35s linear infinite; }
+.ticker-inner:hover { animation-play-state: paused; }
+@keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+/* Nav */
+.nav-link { position: relative; }
+.nav-link::after { content:''; position:absolute; bottom:-4px; left:0; width:0; height:2px; background:#dc2626; transition:width .3s; }
+.nav-link:hover::after { width:100%; }
+
+/* Hero image zoom */
+.img-zoom { overflow: hidden; }
+.img-zoom img { transition: transform .6s ease; }
+.img-zoom:hover img { transform: scale(1.04); }
+
+/* Card hover */
+.card-hover { transition: transform .3s ease, box-shadow .3s ease; }
+.card-hover:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,.12); }
+
+/* Divider */
+.section-divider { border-top: 3px solid #111; }
+
+/* Quote block */
+.pullquote { border-left: 5px solid #dc2626; }
+
+/* Tag pill */
+.tag { letter-spacing: .08em; }
+
+/* Mobile menu */
+#mobile-menu { display: none; }
+#mobile-menu.open { display: flex; }
+
+/* Dark newsletter box */
+.dark-box { background: #0f0f0f; }
+
+/* Category bar */
+.cat-bar { border-bottom: 1px solid #ddd; }
+.cat-item { cursor: pointer; padding: .5rem 0; border-bottom: 3px solid transparent; transition: border-color .2s, color .2s; }
+.cat-item.active, .cat-item:hover { border-bottom-color: #dc2626; color: #dc2626; }
+
+/* Sticky sidebar */
+.sticky-sidebar { position: sticky; top: 80px; }
+
+/* Nav Dropdown */
+.nav-dropdown { position: relative; }
+.nav-dropdown-menu {
+    display: none; position: absolute; top: calc(100% + 16px); left: 50%;
+    transform: translateX(-50%); background: #fff; border: 2px solid #111;
+    min-width: 160px; z-index: 300; padding: 4px 0;
+}
+.nav-dropdown-menu::before {
+    content: ''; position: absolute; top: -7px; left: 50%; transform: translateX(-50%);
+    border-left: 7px solid transparent; border-right: 7px solid transparent;
+    border-bottom: 7px solid #111;
+}
+.nav-dropdown-menu::after {
+    content: ''; position: absolute; top: -5px; left: 50%; transform: translateX(-50%);
+    border-left: 6px solid transparent; border-right: 6px solid transparent;
+    border-bottom: 6px solid #fff;
+}
+.nav-dropdown:hover .nav-dropdown-menu { display: block; }
+.nav-dropdown-item {
+    display: block; padding: .6rem 1.2rem; font-size: .65rem; font-weight: 800;
+    text-transform: uppercase; letter-spacing: .1em; white-space: nowrap;
+    color: #111; text-decoration: none; transition: color .15s, background .15s;
+}
+.nav-dropdown-item:hover { color: #dc2626; background: #f8f7f4; }
+.nav-dropdown-item + .nav-dropdown-item { border-top: 1px solid #f0f0f0; }
+.nav-arrow { font-size: .5rem; margin-left: 3px; vertical-align: middle; transition: transform .2s; }
+.nav-dropdown:hover .nav-arrow { transform: rotate(180deg); }
+
+/* Toast */
+#toast {
+    position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(80px);
+    background: #111; color: #fff; padding: .875rem 1.5rem; font-size: .8rem; font-weight: 600;
+    z-index: 9999; transition: transform .35s ease, opacity .35s ease;
+    opacity: 0; pointer-events: none; border-left: 4px solid #dc2626;
+    max-width: 90vw; text-align: center;
+}
+#toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+/* Auth Modal */
+.modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,.65); backdrop-filter: blur(4px);
+    z-index: 1000; align-items: center; justify-content: center; padding: 1rem;
+}
+.modal-overlay.open { display: flex; }
+.modal-box {
+    background: #fff; width: 100%; max-width: 480px;
+    max-height: 92vh; overflow-y: auto;
+    animation: modalIn .25s ease;
+}
+@keyframes modalIn { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+
+.auth-input {
+    width:100%; border:1.5px solid #ddd; padding:.75rem 1rem;
+    font-size:.8125rem; outline:none; transition:border-color .2s;
+    font-family: inherit;
+}
+.auth-input:focus { border-color:#111; }
+.auth-btn { width:100%; background:#111; color:#fff; padding:.875rem; font-size:.6875rem; font-weight:800; text-transform:uppercase; letter-spacing:.12em; border:none; cursor:pointer; transition:background .2s; }
+.auth-btn:hover { background:#dc2626; }
+.auth-btn.outline { background:#fff; color:#111; border:2px solid #111; }
+.auth-btn.outline:hover { background:#111; color:#fff; }
+
+/* User avatar */
+.user-avatar { width:32px; height:32px; border-radius:50%; background:#dc2626; color:#fff; display:flex; align-items:center; justify-content:center; font-size:.65rem; font-weight:800; cursor:pointer; }
+.dropdown-menu { display:none; position:absolute; right:0; top:calc(100% + 8px); background:#fff; border:1.5px solid #111; min-width:180px; z-index:200; }
+.dropdown-menu.open { display:block; }
+.dropdown-item { display:block; padding:.625rem 1rem; font-size:.7rem; font-weight:700; text-transform:uppercase; letter-spacing:.08em; cursor:pointer; border-bottom:1px solid #f0f0f0; text-decoration: none; color: #111; }
+.dropdown-item:hover { background:#f8f7f4; color:#dc2626; }
+
+/* Single post content */
+.post-content { max-width: 720px; margin: 0 auto; font-size: 1rem; line-height: 1.8; color: #222; }
+.post-content p { margin-bottom: 1.5rem; }
+.post-content h2 { font-size: 1.75rem; margin: 2.5rem 0 1rem; }
+.post-content h3 { font-size: 1.375rem; margin: 2rem 0 .75rem; }
+.post-content img { width: 100%; height: auto; margin: 2rem 0; }
+.post-content ul, .post-content ol { margin: 1rem 0 1.5rem 1.5rem; }
+.post-content li { margin-bottom: .5rem; }
+.post-content blockquote { border-left: 5px solid #dc2626; padding: 1rem 1.5rem; margin: 2rem 0; font-style: italic; color: #555; }
+
+/* WordPress login form styling */
+#loginform, #registerform { display: flex; flex-direction: column; gap: 1rem; }
+#loginform label, #registerform label { font-size: .625rem; font-weight: 800; text-transform: uppercase; letter-spacing: .1em; color: #555; display: block; margin-bottom: .25rem; }
+#loginform input[type="text"],
+#loginform input[type="password"],
+#loginform input[type="email"],
+#registerform input[type="text"],
+#registerform input[type="email"],
+#registerform input[type="password"] {
+    width: 100%; border: 1.5px solid #ddd; padding: .75rem 1rem;
+    font-size: .8125rem; outline: none; transition: border-color .2s;
+}
+#loginform input:focus, #registerform input:focus { border-color: #111; }
+#loginform input[type="submit"],
+#registerform input[type="submit"] {
+    background: #111; color: #fff; padding: .875rem; font-size: .6875rem;
+    font-weight: 800; text-transform: uppercase; letter-spacing: .12em;
+    border: none; cursor: pointer; transition: background .2s; width: 100%;
+}
+#loginform input[type="submit"]:hover,
+#registerform input[type="submit"]:hover { background: #dc2626; }
